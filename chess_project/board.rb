@@ -6,7 +6,7 @@ class Board
 
     def initialize
         @sentinel=NullPiece.instance
-        make_starting_grid(fill_board)        
+        make_starting_grid(fill_board=true)        
     end
 
     def [](pos)
@@ -62,6 +62,10 @@ class Board
         pieces.any? {|p| p.color!=color && p.moves.include?(king_pos)}
     end
 
+    def checkmate?(color)
+        in_check?(color) && pieces.select {|p| p.color==color}.all?(&:valid_moves.empty?)
+    end
+
     private
 
     attr_reader :sentinel
@@ -71,7 +75,7 @@ class Board
 
         i= (color==:white) ? 7 : 0
         back_pieces.each_with_index do |piece_class,j|
-            piece.class.new(color,self,[i,j])
+            piece_class.new(color,self,[i,j])
         end
     end
 
@@ -93,6 +97,5 @@ class Board
         king_piece=pieces.find {|p| p.color=color && p.is_a?(King)}
         king_piece || (raise 'King not found')
     end
-
 
 end
