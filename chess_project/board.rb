@@ -4,9 +4,9 @@ class Board
 
     attr_reader :rows
 
-    def initialize
+    def initialize(fill_board=true)
         @sentinel=NullPiece.instance
-        make_starting_grid(fill_board=true)        
+        make_starting_grid(fill_board)        
     end
 
     def [](pos)
@@ -47,14 +47,20 @@ class Board
     end
 
     def move_piece
-    end
-
-    # move without performing checks
-    def move_piece!(start_pos,end_pos)
         raise RuntimeError.new("There is no piece at starting position.") if self[start_pos].nil?
         raise RuntimeError.new("Can not move piece to ending position.") if !self[end_pos].nil?
         self[end_pos]=self[start_pos]
         self[start_pos]=nil
+    end
+
+    # move without performing checks
+    def move_piece!(start_pos,end_pos)
+        piece=self[start_pos]
+        raise 'Piece cannot move like that' unless piece.moves.include?(end_pos)
+        self[end_pos]=piece
+        self[start_pos]=sentinel
+        piece.pos=end_pos
+        nil
     end
 
     def in_check?(color)
@@ -63,7 +69,8 @@ class Board
     end
 
     def checkmate?(color)
-        in_check?(color) && pieces.select {|p| p.color==color}.all?(&:valid_moves.empty?)
+        return false unless in_check?(color)
+        pieces.select {|p| p.color==color}.all? {|piece| piece.valid_moves.empty?}
     end
 
     private
@@ -94,7 +101,7 @@ class Board
     end
 
     def find_king(color)
-        king_piece=pieces.find {|p| p.color=color && p.is_a?(King)}
+        king_piece=pieces.find {|p| p.color==color && p.is_a?(King)}
         king_piece || (raise 'King not found')
     end
 

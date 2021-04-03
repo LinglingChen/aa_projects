@@ -82,10 +82,10 @@ class Cursor
 
   def handle_key(key)
     case key
-    when :return,:space
+    when :return, :space
       toggle_selected
       @cursor_pos
-    when :left,:right,:up,:down
+    when :left, :right, :up, :down
       update_pos(MOVES[key])
       nil
     when :ctrl_c
@@ -98,6 +98,6 @@ class Cursor
   def update_pos(diff)
     x,y=@cursor_pos
     new_pos=[x+diff[0],y+diff[1]]
-    @cursor_pos=new_pos unless board.valid_pos?(pos)
+    @cursor_pos=new_pos if board.valid_pos?(new_pos)
   end
 end
