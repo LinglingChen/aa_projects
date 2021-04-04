@@ -46,11 +46,15 @@ class Board
         new_board
     end
 
-    def move_piece
-        raise RuntimeError.new("There is no piece at starting position.") if self[start_pos].nil?
-        raise RuntimeError.new("Can not move piece to ending position.") if !self[end_pos].nil?
-        self[end_pos]=self[start_pos]
-        self[start_pos]=nil
+    def move_piece(turn_color,start_pos,end_pos)
+        raise "There is no piece." if empty?(start_pos)
+
+        piece=self[start_pos]
+        raise "You cannot move opponent's piece" if piece.color != turn_color
+        raise "You can move piece like that." if !piece.moves.include?(end_pos)
+        raise "You cannot move into check." if !piece.valid_moves.include?(end_pos)
+        
+        move_piece!(start_pos,end_pos)
     end
 
     # move without performing checks
