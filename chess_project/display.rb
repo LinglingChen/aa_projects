@@ -3,11 +3,12 @@ require_relative 'cursor'
 
 class Display
 
-    attr_reader :board,:cursor
+    attr_reader :board,:cursor,:notifications
 
     def initialize(board)
         @board=board
         @cursor=Cursor.new([0,0],board)
+        @notifications={}
     end
 
     def colors_for(i,j)
@@ -36,10 +37,26 @@ class Display
         end
     end
 
+    def reset
+        @notifications.delete(:error)
+    end
+
+    def uncheck
+        @notifications.delete(:check)
+    end
+
+    def set_check
+        @notifications[:check]="check!"
+    end
+
     def render
         system("clear")
         puts "Arrow keys, WASD, or vim to move, space or enter to confirm."
         build_grid.each {|row| puts row.join}
+
+        @notifications.each do |k,v|
+            puts v 
+        end
     end
 
 end

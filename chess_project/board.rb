@@ -51,7 +51,7 @@ class Board
 
         piece=self[start_pos]
         raise "You cannot move opponent's piece" if piece.color != turn_color
-        raise "You can move piece like that." if !piece.moves.include?(end_pos)
+        raise "You cannot move piece like that." if !piece.moves.include?(end_pos)
         raise "You cannot move into check." if !piece.valid_moves.include?(end_pos)
         
         move_piece!(start_pos,end_pos)
