@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'human_player'
+require_relative 'computer_player'
 
 class Game
 
@@ -10,7 +11,7 @@ class Game
         @display=Display.new(@board)
         @players={
             :white => HumanPlayer.new(:white,@display),
-            :black => HumanPlayer.new(:black,@display)
+            :black => ComputerPlayer.new(:black,@display)
         }
         @current_player=:white
     end
